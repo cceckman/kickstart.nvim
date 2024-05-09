@@ -654,7 +654,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, text = true }
         return {
           timeout_ms = 500,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -896,6 +896,21 @@ require('lazy').setup({
     version = '1.7.1',
   },
 
+  -- {
+  --   'ethersync/ethersync-vim',
+  -- },
+  {
+    -- Coverage gutter:
+    'andythigpen/nvim-coverage',
+    config = function(_, _)
+      require('coverage').setup {
+        auto_reload = true,
+        auto_reload_timeout_ms = 200,
+        lcov_file = 'target/lcov.info',
+      }
+    end,
+  },
+
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
@@ -926,6 +941,9 @@ require('lazy').setup({
 
 vim.cmd [[colorscheme selenized]]
 vim.cmd [[au BufRead,BufNewFile *.do set filetype=sh]]
+
+-- Coverage bindings:
+vim.keymap.set('n', '<leader>|', '<Cmd>CoverageLoadLcov target/lcov.info<CR><Cmd>CoverageShow<CR>')
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
