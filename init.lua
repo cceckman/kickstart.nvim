@@ -951,5 +951,13 @@ vim.cmd [[au BufRead,BufNewFile *.do set filetype=sh]]
 -- Coverage bindings:
 vim.keymap.set('n', '<leader>|', '<Cmd>CoverageLoadLcov target/lcov.info<CR><Cmd>CoverageShow<CR>')
 
+-- Conceal some formatting in Markdown:
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'markdown' },
+  callback = function()
+    vim.cmd [[set conceallevel=2]]
+  end,
+})
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
