@@ -916,6 +916,53 @@ require('lazy').setup({
       }
     end,
   },
+  {
+    -- Context from tree-sitter, floating at the top:
+    'nvim-treesitter/nvim-treesitter-context',
+    config = function(_, _)
+      require('treesitter-context').setup {
+        separator = '-',
+      }
+    end,
+  },
+  -- Support for pandoc-like markdown: handle front matter, conceal.
+  -- Load one then the other; seems to be some odd interaction between them,
+  -- where it doesn't always bind everything right.
+  {
+    'vim-pandoc/vim-pandoc',
+    config = function(_, _)
+      vim.cmd [[
+        " Don't fold by default
+        let g:pandoc#folding#level=99
+        " Don't display the folding column
+        let g:pandoc#folding#fdc=0
+        " Do default to operating on the "markdown" filetype
+        let g:pandoc#filetypes#pandoc_markdown=1
+      ]]
+    end,
+  },
+  {
+    'vim-pandoc/vim-pandoc-syntax',
+    -- This extension (or vim-pandoc?) wants to treat .md as the 'pandoc' FileType.
+    -- That's kinda OK; but I do want to use the markdown.pandoc syntax,
+    -- which seems like the "nice" version.
+    config = function(_, _)
+      -- This seems quite flaky. Sometimes loading the file catches it,
+      -- sometimes it doesn't. Literally just waiting a few seconds and reloading
+      -- the same file will change it. What?
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = { 'pandoc', 'markdown.pandoc' },
+        callback = function(_)
+          vim.cmd [[ setlocal syntax=markdown.pandoc ]]
+          print 'filetype ran'
+        end,
+      })
+      vim.cmd [[
+        " Conceal URLs in links:
+        let g:pandoc#syntax#conceal#urls = 1
+        ]]
+    end,
+  },
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
