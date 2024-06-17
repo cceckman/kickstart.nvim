@@ -917,6 +917,25 @@ require('lazy').setup({
     end,
   },
 
+  {
+    -- Linting without LSP; use for Vale
+    'mfussenegger/nvim-lint',
+    config = function(_, _)
+      -- Example:
+      require('lint').linters_by_ft = {
+        markdown = { 'vale' },
+      }
+      vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
+        callback = function()
+          -- try_lint without arguments runs the linters defined in `linters_by_ft`
+          -- for the current filetype
+          -- TODO: Leader version?
+          require('lint').try_lint()
+        end,
+      })
+    end,
+  },
+
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
