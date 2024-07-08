@@ -856,6 +856,10 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby', 'markdown' },
       },
+      -- Disable for markdown; the regex-based highlighting does a better job of italics/bold/etc.
+      -- TODO: Consider https://github.com/preservim/vim-markdown or something else
+      -- that hides links?
+      disable = { 'markdown' },
       indent = { enable = true, disable = { 'ruby' } },
     },
     config = function(_, opts)
@@ -936,6 +940,18 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'hedyhli/outline.nvim',
+    config = function()
+      -- Example mapping to toggle outline
+      vim.keymap.set('n', '<leader>o', '<cmd>Outline<CR>', { desc = 'Toggle Outline' })
+
+      require('outline').setup {
+        -- Your setup opts here (leave empty to use defaults)
+      }
+    end,
+  },
+
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
@@ -966,6 +982,13 @@ require('lazy').setup({
 
 vim.cmd [[colorscheme selenized]]
 vim.cmd [[au BufRead,BufNewFile *.do set filetype=sh]]
+-- A very good answer in https://stackoverflow.com/questions/51995128/setting-autoindentation-to-spaces-in-neovim
+vim.cmd [[
+  set expandtab
+  set tabstop=4
+  set shiftwidth=0
+  set softtabstop=0
+]]
 
 -- Coverage bindings:
 vim.keymap.set('n', '<leader>|', '<Cmd>CoverageLoadLcov target/lcov.info<CR><Cmd>CoverageShow<CR>')
