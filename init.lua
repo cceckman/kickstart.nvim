@@ -562,6 +562,12 @@ require('lazy').setup({
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
+
+          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_diagnostic) then
+            map('<leader>td', function()
+              vim.lsp.diagnostic.enable(not vim.lsp.diagnostic.is_enabled { bufnr = event.buf })
+            end, '[T]oggle [D]iagnostics')
+          end
         end,
       })
 
